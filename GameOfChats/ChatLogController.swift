@@ -34,10 +34,10 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 
                 guard let dictionary = snapshot.value as? [String: Any] else { return }
                 
-                    self.messages.append(Message(dictionary: dictionary))
-                    DispatchQueue.main.async {
-                        self.collectionView?.reloadData()
-                    }
+                self.messages.append(Message(dictionary: dictionary))
+                DispatchQueue.main.async {
+                    self.collectionView?.reloadData()
+                }
             })
         }, withCancel: nil)
     }
@@ -110,7 +110,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         separatorLineView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
         separatorLineView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
         separatorLineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-
+        
         return containerView
     }()
     
@@ -148,7 +148,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let ref = FIRStorage.storage().reference().child("messages_images").child(imageName)
         
         if let uploadData = UIImageJPEGRepresentation(image, 0.2){
-        
+            
             ref.put(uploadData, metadata: nil, completion: { (metadata, error) in
                 if error != nil {
                     print("Failed to upload image: " , error!)
@@ -192,7 +192,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         UIView.animate(withDuration: keyboardDuration) {
             self.view.layoutIfNeeded()
         }
-
+        
     }
     
     func handleKeyboardWillShow(notification: NSNotification){
@@ -201,7 +201,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
         // move keyboard up
         containerViewBottomAnchor?.constant = -keyboardFrame.height
-        UIView.animate(withDuration: keyboardDuration) { 
+        UIView.animate(withDuration: keyboardDuration) {
             self.view.layoutIfNeeded()
         }
     }
@@ -283,7 +283,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         } else {
             cell.messageImageView.isHidden = true
         }
-
+        
     }
     
     var containerViewBottomAnchor : NSLayoutConstraint?
@@ -302,31 +302,32 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let ref = FIRDatabase.database().reference().child("messages")
         let childRef = ref.childByAutoId()
         let timestamp = NSNumber(value: Int(Date().timeIntervalSince1970))
-        if let toId = user?.id, let fromId = FIRAuth.auth()?.currentUser?.uid{
+        let toId = user!.id!
+        let fromId = FIRAuth.auth()!.currentUser!.uid
+        
+        var values: [String: Any] = ["toId": toId, "fromId": fromId, "timestamp": timestamp]
+        
+        // append optional properties
+        // key $0, value $1
+        properties.forEach({values[$0] = $1})
+        
+        childRef.updateChildValues(values, withCompletionBlock: { (error, ref) in
+            if error != nil {
+                print(error as! NSError)
+                return
+            }
             
-            var values: [String: Any] = ["text": inputTextField.text!, "toId": toId, "fromId": fromId, "timestamp": timestamp]
-            // append optional properties
-            // key $0, value $1
-            properties.forEach({values[$0] = $1})
+            self.inputTextField.text = nil
             
-            childRef.updateChildValues(values, withCompletionBlock: { (error, ref) in
-                if error != nil {
-                    print(error as! NSError)
-                    return
-                }
-                
-                self.inputTextField.text = nil
-                
-                let userMessagesRef = FIRDatabase.database().reference().child("user-messages").child(fromId).child(toId)
-                
-                let messageId = childRef.key
-                userMessagesRef.updateChildValues([messageId: 1])
-                
-                let recipientUserMessagesRef = FIRDatabase.database().reference().child("user-messages").child(toId).child(fromId)
-                recipientUserMessagesRef.updateChildValues([messageId: 1])
-            })
-        }
-
+            let userMessagesRef = FIRDatabase.database().reference().child("user-messages").child(fromId).child(toId)
+            
+            let messageId = childRef.key
+            userMessagesRef.updateChildValues([messageId: 1])
+            
+            let recipientUserMessagesRef = FIRDatabase.database().reference().child("user-messages").child(toId).child(fromId)
+            recipientUserMessagesRef.updateChildValues([messageId: 1])
+        })
+        
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
