@@ -10,6 +10,8 @@ import UIKit
 
 class ChatMessageCell: UICollectionViewCell {
     
+    var chatLogController: ChatLogController?
+    
     let textView: UITextView = {
         let tv = UITextView()
         tv.text = "SAMPLE TEXT FOR NOW"
@@ -33,14 +35,26 @@ class ChatMessageCell: UICollectionViewCell {
         return view
     }()
     
-    let messageImageView: UIImageView = {
+    lazy var messageImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 16
         imageView.contentMode = .scaleAspectFill
+        imageView.isUserInteractionEnabled = true
+        
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomTap)))
         return imageView
     }()
+    
+    func handleZoomTap(tapGesture: UITapGestureRecognizer){
+        print("tapped!")
+        if let imageView = tapGesture.view as? UIImageView{
+            self.chatLogController?.performZoomIn(for: imageView)
+        }
+        // PRO Tip: don't perform a lot of custom logic inside of a view class
+        
+    }
     
     let profileImageView: UIImageView = {
        let imageView = UIImageView()
