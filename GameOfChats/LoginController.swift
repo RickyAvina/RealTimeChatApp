@@ -5,8 +5,8 @@ import Firebase
 
 class LoginController: UIViewController, UITextFieldDelegate {
     
-   // let loadingGifUrl = "http://ammoseek.com/img/big_loading.gif"
-   // let imageUrl = UIImage.gif
+    // let loadingGifUrl = "http://ammoseek.com/img/big_loading.gif"
+    // let imageUrl = UIImage.gif
     
     var messagesController = MessagesController()
     
@@ -93,7 +93,7 @@ class LoginController: UIViewController, UITextFieldDelegate {
         
         return img
     }()
-
+    
     lazy var loginRegisterSegmentedControl: UISegmentedControl = {
         let sc = UISegmentedControl(items: ["Login", "Register"])
         sc.translatesAutoresizingMaskIntoConstraints = false
@@ -133,6 +133,12 @@ class LoginController: UIViewController, UITextFieldDelegate {
         passwordTextFieldHeightAnchor?.isActive = true
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -152,6 +158,34 @@ class LoginController: UIViewController, UITextFieldDelegate {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap))
         tapGestureRecognizer.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGestureRecognizer)
+        
+        setupKeyboardObservers()
+    }
+    
+    func setupKeyboardObservers(){
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    func handleKeyboardWillHide(notification: NSNotification){
+        let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue as Double
+        
+        inputsContainerViewCenterYAnchor?.constant = 0
+        UIView.animate(withDuration: keyboardDuration) {
+            self.view.layoutIfNeeded()
+        }
+        
+    }
+    
+    func handleKeyboardWillShow(notification: NSNotification){
+        let keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue as CGRect
+        let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as AnyObject).doubleValue as Double
+        
+        // move keyboard up
+        inputsContainerViewCenterYAnchor?.constant = -keyboardFrame.height/5
+        UIView.animate(withDuration: keyboardDuration) {
+            self.view.layoutIfNeeded()
+        }
     }
     
     func handleOutsideTap(){
@@ -190,12 +224,16 @@ class LoginController: UIViewController, UITextFieldDelegate {
     var nameTextFieldHeightAnchor: NSLayoutConstraint?
     var emailTextFieldHeightAnchor: NSLayoutConstraint?
     var passwordTextFieldHeightAnchor: NSLayoutConstraint?
-
+    
+    var inputsContainerViewCenterYAnchor: NSLayoutConstraint?
+    
     func setupInputContainerView() {
         
         //Constraints :  need x,y, width and height
         inputsContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        inputsContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        inputsContainerViewCenterYAnchor = inputsContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 0)
+        inputsContainerViewCenterYAnchor?.isActive = true
+        
         inputsContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -24).isActive = true
         
         inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: 150)
@@ -206,7 +244,6 @@ class LoginController: UIViewController, UITextFieldDelegate {
         inputsContainerView.addSubview(emailTextField)
         inputsContainerView.addSubview(emailSeparator)
         inputsContainerView.addSubview(passwordTextField)
-        
         
         // Name
         nameTextField.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive = true
@@ -219,7 +256,7 @@ class LoginController: UIViewController, UITextFieldDelegate {
         nameSeparator.topAnchor.constraint(equalTo: nameTextField.bottomAnchor).isActive = true
         nameSeparator.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
         nameSeparator.heightAnchor.constraint(equalToConstant: 1).isActive = true
-    
+        
         
         // Email
         emailTextField.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive = true

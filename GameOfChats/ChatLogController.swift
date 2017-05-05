@@ -8,6 +8,8 @@
 
 import UIKit
 import Firebase
+import MobileCoreServices
+import AVFoundation
 
 class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -127,6 +129,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         
         imagePickerController.delegate = self
         imagePickerController.allowsEditing = true
+        imagePickerController.mediaTypes = []
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -193,11 +196,15 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         //
         //        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
-        
     }
     
+    var timer: Timer?
+    
     func handleKeyboardDidShow(){
-        // might need timer here
+        attemptScrollToBottom()
+    }
+    
+    func attemptScrollToBottom(){
         if messages.count > 0 {
             scrollToBottom()
         }
@@ -370,6 +377,10 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         zoomingImageView.isUserInteractionEnabled = true
         zoomingImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
         
+        let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(handleZoomOutSwipe))
+        swipeRecognizer.direction = UISwipeGestureRecognizerDirection.down
+        zoomingImageView.addGestureRecognizer(swipeRecognizer)
+        
         if let keyWindow = UIApplication.shared.keyWindow {
             self.blackBackgroundView = UIView(frame: keyWindow.frame)
             self.blackBackgroundView?.backgroundColor = UIColor.black
@@ -391,26 +402,44 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         }
     }
     
-        func handleZoomOut(tapGesture: UITapGestureRecognizer){
-            if let zoomOutImageView = tapGesture.view {
-                
-                zoomOutImageView.layer.cornerRadius = 16
-                zoomOutImageView.clipsToBounds = true
-                
-                UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-                    zoomOutImageView.frame = self.startingFrame!
-                    self.blackBackgroundView?.alpha = 0
-                    self.inputContainerView.alpha = 1
-                }, completion: { (completed) in
-                    zoomOutImageView.removeFromSuperview()
-                    self.imageView?.isHidden = false
-                })
-            }
+    func handleZoomOutSwipe(swipeGesture: UISwipeGestureRecognizer){
+        if let zoomOutImageView = swipeGesture.view {
+            
+            zoomOutImageView.layer.cornerRadius = 16
+            zoomOutImageView.clipsToBounds = true
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+                zoomOutImageView.frame = self.startingFrame!
+                self.blackBackgroundView?.alpha = 0
+                self.inputContainerView.alpha = 1
+            }, completion: { (completed) in
+                zoomOutImageView.removeFromSuperview()
+                self.imageView?.isHidden = false
+            })
         }
         
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            handleSend()
-            return true
+    }
+    
+    func handleZoomOut(tapGesture: UITapGestureRecognizer){
+        if let zoomOutImageView = tapGesture.view {
+            
+            zoomOutImageView.layer.cornerRadius = 16
+            zoomOutImageView.clipsToBounds = true
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+                zoomOutImageView.frame = self.startingFrame!
+                self.blackBackgroundView?.alpha = 0
+                self.inputContainerView.alpha = 1
+            }, completion: { (completed) in
+                zoomOutImageView.removeFromSuperview()
+                self.imageView?.isHidden = false
+            })
         }
-        
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        handleSend()
+        return true
+    }
+    
 }
