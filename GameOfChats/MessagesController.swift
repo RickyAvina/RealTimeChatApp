@@ -37,20 +37,20 @@ class MessagesController: UITableViewController {
         
         guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
         let message = self.messages[indexPath.row]
-
+        
         if let chatPartnerId = message.chatPartnerId(){
-                    FIRDatabase.database().reference().child("user-messages").child(uid).child(chatPartnerId).removeValue(completionBlock: { (error, ref) in
-                        
-                        if error != nil {
-                            print("failed to delete message", error as! NSError)
-                            return
-                        }
-                        
-                        self.messagesDictionary.removeValue(forKey: chatPartnerId)
-                        self.attemptReloadOfTable()
-                    })
+            FIRDatabase.database().reference().child("user-messages").child(uid).child(chatPartnerId).removeValue(completionBlock: { (error, ref) in
+                
+                if error != nil {
+                    print("failed to delete message", error as! NSError)
+                    return
+                }
+                
+                self.messagesDictionary.removeValue(forKey: chatPartnerId)
+                self.attemptReloadOfTable()
+            })
         }
-
+        
     }
     
     var messages = [Message]()
@@ -69,7 +69,7 @@ class MessagesController: UITableViewController {
                 let messageId = snapshot.key
                 self.fetchMessage(with: messageId)
             })
-
+            
         })
         
         ref.observe(.childRemoved, with: { (snapshot) in
@@ -107,7 +107,7 @@ class MessagesController: UITableViewController {
         self.messages.sort(by: { (message1, message2) -> Bool in
             return message1.timestamp!.intValue > message2.timestamp!.intValue
         })
-
+        
         DispatchQueue.main.async{
             self.tableView.reloadData()
         }
@@ -118,7 +118,7 @@ class MessagesController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       // let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellId")
+        // let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellId")
         
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! UserCell
         let message = messages[indexPath.row]
@@ -165,11 +165,11 @@ class MessagesController: UITableViewController {
         messages.removeAll()
         messagesDictionary.removeAll()
         
-       // DispatchQueue.main.async {
-            self.tableView.reloadData()
-       // }
+        // DispatchQueue.main.async {
+        self.tableView.reloadData()
+        // }
         observeUserMessages()
-
+        
         
         let titleView = UIView()
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
@@ -203,7 +203,7 @@ class MessagesController: UITableViewController {
         if let username = user.name {
             nameLabel.text = username.cutStringOff(at: 20)
         }
-
+        
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         nameLabel.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8).isActive = true
@@ -216,8 +216,8 @@ class MessagesController: UITableViewController {
         
         self.navigationItem.titleView = titleView
         
-//        titleView.isUserInteractionEnabled = true
-//        titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showChatController)))
+        //        titleView.isUserInteractionEnabled = true
+        //        titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showChatController)))
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -239,7 +239,7 @@ class MessagesController: UITableViewController {
             self.showChatControllerForUser(user: user)
         })
         
-      // showChatControllerForUser(user: )
+        // showChatControllerForUser(user: )
     }
     
     func showChatControllerForUser(user: User){

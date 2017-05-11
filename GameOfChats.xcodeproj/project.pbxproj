@@ -23,6 +23,7 @@
 		EDC25EEC1E99BE7B00F21BCE /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC25EEB1E99BE7B00F21BCE /* NewMessageController.swift */; };
 		EDC25EEF1E99D8D000F21BCE /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC25EEE1E99D8D000F21BCE /* User.swift */; };
 		EDC25EF11E9AB17B00F21BCE /* LoginController+handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC25EF01E9AB17B00F21BCE /* LoginController+handlers.swift */; };
+		EDD0B7911EC403C100699477 /* ChatInputContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD0B7901EC403C100699477 /* ChatInputContainerView.swift */; };
 		EDFD889A1E8E188D00BC306C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EDFD88991E8E188D00BC306C /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +48,7 @@
 		EDC25EEB1E99BE7B00F21BCE /* NewMessageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		EDC25EEE1E99D8D000F21BCE /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		EDC25EF01E9AB17B00F21BCE /* LoginController+handlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginController+handlers.swift"; sourceTree = "<group>"; };
+		EDD0B7901EC403C100699477 /* ChatInputContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatInputContainerView.swift; sourceTree = "<group>"; };
 		EDFD88991E8E188D00BC306C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,6 +85,7 @@
 			children = (
 				ED79EC421EA8FD8F00C2F893 /* UserCell.swift */,
 				ED922C821EAEE284000D6039 /* ChatMessageCell.swift */,
+				EDD0B7901EC403C100699477 /* ChatInputContainerView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ED0C54551EA50D64005E1A66 /* ChatLogController.swift in Sources */,
+				EDD0B7911EC403C100699477 /* ChatInputContainerView.swift in Sources */,
 				ED9DEAC51E8B85CA0059F86E /* MessagesController.swift in Sources */,
 				EDC25EEC1E99BE7B00F21BCE /* NewMessageController.swift in Sources */,
 				ED79EC3E1EA841B100C2F893 /* Message.swift in Sources */,
