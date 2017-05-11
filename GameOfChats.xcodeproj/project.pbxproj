@@ -49,6 +49,7 @@
 		EDC25EEE1E99D8D000F21BCE /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		EDC25EF01E9AB17B00F21BCE /* LoginController+handlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginController+handlers.swift"; sourceTree = "<group>"; };
 		EDD0B7901EC403C100699477 /* ChatInputContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatInputContainerView.swift; sourceTree = "<group>"; };
+		EDD235871EC500E000596BF9 /* GameOfChats.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GameOfChats.entitlements; sourceTree = "<group>"; };
 		EDFD88991E8E188D00BC306C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -123,6 +124,7 @@
 		ED9DEAC11E8B85CA0059F86E /* GameOfChats */ = {
 			isa = PBXGroup;
 			children = (
+				EDD235871EC500E000596BF9 /* GameOfChats.entitlements */,
 				ED79EC3F1EA8FD5300C2F893 /* Views */,
 				ED0C54511E9C6751005E1A66 /* Helpers */,
 				EDC25EED1E99D8BE00F21BCE /* Model */,
@@ -193,6 +195,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = KYVYVR927G;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -417,6 +424,7 @@
 			baseConfigurationReference = E317D9F2558CD887FD08CA8C /* Pods-GameOfChats.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GameOfChats/GameOfChats.entitlements;
 				DEVELOPMENT_TEAM = KYVYVR927G;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = GameOfChats/Info.plist;
@@ -433,6 +441,7 @@
 			baseConfigurationReference = 119974AAA9B4EDDEDAD29114 /* Pods-GameOfChats.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GameOfChats/GameOfChats.entitlements;
 				DEVELOPMENT_TEAM = KYVYVR927G;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = GameOfChats/Info.plist;
