@@ -62,8 +62,7 @@ extension LoginController : UIImagePickerControllerDelegate, UINavigationControl
             
             // successful authentication
             let imageName = NSUUID().uuidString
-            
-            let storargeRef = FIRStorage.storage().reference().child("\(email)_\(imageName)").child("profileImage.png")
+            let storargeRef = FIRStorage.storage().reference().child("profile_images").child(imageName)
             
             // compression
             if let profileImage = self.profileImageView.image, let uploadData = UIImageJPEGRepresentation(profileImage, 0.08) {
