@@ -25,6 +25,32 @@ class MessagesController: UITableViewController {
         checkIfUserIsLoggedIn()
         
         tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
+        
+        tableView.allowsMultipleSelectionDuringEditing = true
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
+        let message = self.messages[indexPath.row]
+
+        if let chatPartnerId = message.chatPartnerId(){
+                    FIRDatabase.database().reference().child("user-messages").child(uid).child(chatPartnerId).removeValue(completionBlock: { (error, ref) in
+                        
+                        if error != nil {
+                            print("failed to delete message", error as! NSError)
+                            return
+                        }
+                        
+                        self.messagesDictionary.removeValue(forKey: chatPartnerId)
+                        self.attemptReloadOfTable()
+                    })
+        }
+
     }
     
     var messages = [Message]()
@@ -44,6 +70,11 @@ class MessagesController: UITableViewController {
                 self.fetchMessage(with: messageId)
             })
 
+        })
+        
+        ref.observe(.childRemoved, with: { (snapshot) in
+            self.messagesDictionary.removeValue(forKey: snapshot.key)
+            self.attemptReloadOfTable()
         })
     }
     
